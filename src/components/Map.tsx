@@ -1,6 +1,6 @@
 import { MapPin } from "lucide-react";
 import configData from "@/data/config.json";
-import venezuelaMap from "@/assets/venezuela-map.png";
+import venezuelaMap from "@/assets/venezuela-map-libre.png";
 
 const Map = () => {
   return (
