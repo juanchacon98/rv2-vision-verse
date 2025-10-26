@@ -9,7 +9,7 @@
   {
     "id": "civ",
     "nombre": "CIV - Colegio de Ingenieros de Venezuela",
-    "imagen": "https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=800&q=80",
+    "imagen": "/src/assets/civ-building.jpg",
     "descripcion": "Recorrido virtual de las instalaciones del Colegio de Ingenieros de Venezuela",
     "url": "https://rv2ven.com/tours/CIV"
   },
@@ -19,5 +19,12 @@
     "imagen": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80",
     "descripcion": "Demostración de recorrido en una vivienda",
     "url": "https://rv2ven.com/tours/Ejemplo%20de%20casa"
+  },
+  {
+    "id": "colab",
+    "nombre": "Coworking COLAB",
+    "imagen": "/src/assets/colab-coworking.jpg",
+    "descripcion": "Espacio de trabajo colaborativo moderno y flexible en Caracas",
+    "url": "https://www.rv2ven.com/COLAB"
   }
 ]

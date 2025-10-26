@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import heroBg from "@/assets/hero-bg.jpg";
 
 const Hero = () => {
   const scrollToContacto = () => {
@@ -12,8 +13,17 @@ const Hero = () => {
   return (
     <section
       id="inicio"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#6CC7FF] to-[#E9F6FF]"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0">
+        <img 
+          src={heroBg} 
+          alt="Virtual Tour Background" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#6CC7FF]/80 to-[#E9F6FF]/70" />
+      </div>
 
       {/* Content */}
       <div className="container mx-auto px-4 py-32 z-10 text-center">
