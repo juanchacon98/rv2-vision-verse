@@ -1,5 +1,6 @@
 import { MapPin } from "lucide-react";
 import configData from "@/data/config.json";
+import venezuelaMap from "@/assets/venezuela-map.png";
 
 const Map = () => {
   return (
@@ -20,12 +21,9 @@ const Map = () => {
             {/* Imagen de mapa de Venezuela */}
             <div className="relative h-96 flex items-center justify-center">
               <img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Venezuela_location_map.svg/800px-Venezuela_location_map.svg.png"
+                src={venezuelaMap}
                 alt="Mapa de Venezuela"
-                className="max-h-full w-auto opacity-40"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
+                className="max-h-full w-auto opacity-30"
               />
               
               {/* Marcadores de ciudades */}
