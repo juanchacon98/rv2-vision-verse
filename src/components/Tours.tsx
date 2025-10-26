@@ -16,7 +16,7 @@ const Tours = () => {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {toursData.map((tour, index) => (
             <Card
               key={tour.id}
@@ -45,7 +45,7 @@ const Tours = () => {
                   onClick={() => window.open(tour.url, "_blank")}
                 >
                   <ExternalLink className="mr-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-                  Abrir en otra pestaña
+                  Abrir tour
                 </Button>
               </CardContent>
             </Card>

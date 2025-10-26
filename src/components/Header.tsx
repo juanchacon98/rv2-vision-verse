@@ -35,7 +35,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img src={logo} alt="RV2 Logo" className="h-10 w-auto" />
+            <img src={logo} alt="RV2 Logo" className="h-12 w-auto" />
           </div>
 
           {/* Desktop Navigation */}
@@ -66,7 +66,7 @@ const Header = () => {
             </button>
             <Button
               onClick={() => scrollToSection("contacto")}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-[var(--shadow-smooth)]"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-lg transition-all duration-300"
             >
               Contacto
             </Button>
@@ -110,7 +110,7 @@ const Header = () => {
             </button>
             <Button
               onClick={() => scrollToSection("contacto")}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 w-full"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-lg transition-all duration-300 w-full"
             >
               Contacto
             </Button>

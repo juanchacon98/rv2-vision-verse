@@ -10,9 +10,7 @@ const Map = () => {
             ¿Dónde trabajamos?
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Aunque estamos ubicados en <span className="font-semibold text-primary">Caracas</span>,
-            ofrecemos servicios en toda Venezuela: Maracaibo, Valencia,
-            Barquisimeto y más.
+            Ofrecemos nuestros servicios en toda Venezuela, con presencia en <span className="font-semibold text-primary">Caracas</span>, Maracay, Valencia, Puerto La Cruz y San Cristóbal.
           </p>
         </div>
 
@@ -29,7 +27,7 @@ const Map = () => {
               
               {/* Marcadores de ciudades */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="grid grid-cols-2 gap-8 md:gap-12">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                   {configData.mapa.ciudades.map((ciudad, index) => (
                     <div
                       key={index}
