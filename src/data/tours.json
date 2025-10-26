@@ -1,0 +1,30 @@
+[
+  {
+    "id": "civ",
+    "nombre": "CIV - Centro Integral Venezolano",
+    "imagen": "https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=800&q=80",
+    "descripcion": "Recorrido virtual por el Centro Integral Venezolano",
+    "url": "https://ejemplo-tour-civ.com"
+  },
+  {
+    "id": "casa",
+    "nombre": "Casa Residencial",
+    "imagen": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80",
+    "descripcion": "Tour 360° por una moderna casa residencial",
+    "url": "https://ejemplo-tour-casa.com"
+  },
+  {
+    "id": "crc-gym",
+    "nombre": "CRC-GYM",
+    "imagen": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
+    "descripcion": "Recorrido virtual por el gimnasio CRC",
+    "url": "https://ejemplo-tour-gym.com"
+  },
+  {
+    "id": "ventas-carros",
+    "nombre": "Ventas de Carros",
+    "imagen": "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80",
+    "descripcion": "Tour 360° por concesionario de vehículos",
+    "url": "https://ejemplo-tour-carros.com"
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "nombre": "Fabiana Moreau",
+    "estrellas": 5,
+    "comentario": "Contraté el servicio para el evento de mi empresa y quedé impresionada. La experiencia fue única e innovadora.",
+    "foto": ""
+  },
+  {
+    "nombre": "Carlos Mendoza",
+    "estrellas": 5,
+    "comentario": "Excelente trabajo con el recorrido virtual de mi gimnasio. Mis clientes ahora pueden conocer las instalaciones antes de visitarnos.",
+    "foto": ""
+  },
+  {
+    "nombre": "Ana Rodríguez",
+    "estrellas": 5,
+    "comentario": "Profesionales de primera. El recorrido virtual de mi restaurante ha aumentado considerablemente las reservas.",
+    "foto": ""
+  }
+]
