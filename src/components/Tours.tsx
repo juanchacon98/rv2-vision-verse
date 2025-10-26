@@ -2,8 +2,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
 import toursData from "@/data/tours.json";
+import crcGymImg from "@/assets/crc-gym.png";
+import civImg from "@/assets/civ-real.png";
+import colabImg from "@/assets/colab-real.png";
 
 const Tours = () => {
+  const imageMap: Record<string, string> = {
+    "crc-gym": crcGymImg,
+    "civ": civImg,
+    "casa": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80",
+    "colab": colabImg,
+  };
+
   return (
     <section id="proyectos" className="py-24 bg-background">
       <div className="container mx-auto px-4">
@@ -25,7 +35,7 @@ const Tours = () => {
             >
               <div className="relative overflow-hidden aspect-[4/3]">
                 <img
-                  src={tour.imagen}
+                  src={imageMap[tour.id] || tour.imagen}
                   alt={tour.nombre}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />

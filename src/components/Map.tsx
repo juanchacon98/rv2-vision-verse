@@ -23,6 +23,9 @@ const Map = () => {
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Venezuela_location_map.svg/800px-Venezuela_location_map.svg.png"
                 alt="Mapa de Venezuela"
                 className="max-h-full w-auto opacity-40"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
               />
               
               {/* Marcadores de ciudades */}
