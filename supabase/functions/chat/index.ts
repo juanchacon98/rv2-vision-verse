@@ -14,11 +14,14 @@ serve(async (req) => {
     const { messages } = await req.json();
     const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
     
+    console.log("=== CHAT FUNCTION CALLED ===");
+    console.log("Received messages:", messages.length);
+    console.log("GEMINI_API_KEY exists:", !!GEMINI_API_KEY);
+    
     if (!GEMINI_API_KEY) {
+      console.error("GEMINI_API_KEY not found in environment");
       throw new Error("GEMINI_API_KEY is not configured");
     }
-    
-    console.log("Received messages:", messages.length);
 
     const systemPrompt = `Eres un empleado profesional de RV2, una empresa especializada en recorridos virtuales en Venezuela. Tu único objetivo es ayudar a los clientes a entender los beneficios de los recorridos virtuales y cómo pueden impulsar sus negocios.
 
@@ -88,6 +91,8 @@ Actúa siempre como un asesor experto que quiere ayudar genuinamente al cliente 
       }
     );
 
+    console.log("Gemini API response status:", response.status);
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Gemini API error:", response.status, errorText);
@@ -104,7 +109,7 @@ Actúa siempre como un asesor experto que quiere ayudar genuinamente al cliente 
       throw new Error("No response body from Gemini");
     }
 
-    console.log("Successfully connected to Gemini API");
+    console.log("Successfully connected to Gemini API - streaming response");
 
     // Transform Gemini SSE format to OpenAI-compatible format
     const transformStream = new TransformStream({
