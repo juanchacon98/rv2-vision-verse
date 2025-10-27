@@ -22,18 +22,18 @@ const Hero = () => {
           alt="Virtual Tour Background" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#6CC7FF]/80 to-[#E9F6FF]/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/90 via-primary/80 to-accent/70 dark:from-primary/80 dark:to-accent/60" />
       </div>
 
       {/* Content */}
       <div className="container mx-auto px-4 py-32 z-10 text-center">
         <div className="max-w-4xl mx-auto space-y-6 animate-fade-in-up">
-          <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight drop-shadow-lg">
+          <h1 className="text-5xl md:text-7xl font-bold text-primary-foreground leading-tight drop-shadow-2xl">
             Recorridos Virtuales{" "}
-            <span className="text-white">Profesionales</span>
+            <span className="text-primary-foreground">Profesionales</span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-white/95 max-w-2xl mx-auto drop-shadow">
+          <p className="text-xl md:text-2xl text-primary-foreground/95 max-w-2xl mx-auto drop-shadow-lg">
             Impulsa tus espacios en Venezuela: casas, museos, gimnasios y mucho
             más
           </p>
@@ -42,7 +42,7 @@ const Hero = () => {
             <Button
               size="lg"
               onClick={scrollToContacto}
-              className="bg-[#6CC7FF] text-white hover:bg-[#4FB2ED] hover:scale-105 transition-all duration-300 shadow-lg text-lg px-8 py-6 group"
+              className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 hover:scale-105 transition-all duration-300 shadow-lg text-lg px-8 py-6 group"
             >
               Empieza ya
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
