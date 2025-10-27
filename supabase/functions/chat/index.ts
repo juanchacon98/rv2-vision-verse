@@ -12,11 +12,13 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
     
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    if (!GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not configured");
     }
+    
+    console.log("Received messages:", messages.length);
 
     const systemPrompt = `Eres un empleado profesional de RV2, una empresa especializada en recorridos virtuales en Venezuela. Tu único objetivo es ayudar a los clientes a entender los beneficios de los recorridos virtuales y cómo pueden impulsar sus negocios.
 
@@ -44,53 +46,109 @@ REGLAS IMPORTANTES:
 
 Actúa siempre como un asesor experto que quiere ayudar genuinamente al cliente a mejorar su negocio.`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages,
-        ],
-        stream: true,
-      }),
+    // Convert messages to Gemini format
+    const geminiContents = [];
+    
+    // Add system instruction as first user message
+    geminiContents.push({
+      role: "user",
+      parts: [{ text: systemPrompt }]
     });
+    geminiContents.push({
+      role: "model",
+      parts: [{ text: "Entendido. Actuaré como asesor profesional de RV2 enfocado exclusivamente en recorridos virtuales." }]
+    });
+    
+    // Add conversation messages
+    for (const msg of messages) {
+      geminiContents.push({
+        role: msg.role === "assistant" ? "model" : "user",
+        parts: [{ text: msg.content }]
+      });
+    }
+
+    console.log("Calling Gemini API with", geminiContents.length, "messages");
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: geminiContents,
+          generationConfig: {
+            temperature: 0.9,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 1024,
+          },
+        }),
+      }
+    );
 
     if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Límite de solicitudes excedido, intenta de nuevo más tarde." }),
-          {
-            status: 429,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "Se requiere pago, por favor agrega fondos." }),
-          {
-            status: 402,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
-        );
-      }
       const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      console.error("Gemini API error:", response.status, errorText);
       return new Response(
-        JSON.stringify({ error: "Error al conectar con la IA" }),
+        JSON.stringify({ error: "Error al conectar con Gemini: " + errorText }),
         {
-          status: 500,
+          status: response.status,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         }
       );
     }
 
-    return new Response(response.body, {
+    if (!response.body) {
+      throw new Error("No response body from Gemini");
+    }
+
+    console.log("Successfully connected to Gemini API");
+
+    // Transform Gemini SSE format to OpenAI-compatible format
+    const transformStream = new TransformStream({
+      async transform(chunk, controller) {
+        const text = new TextDecoder().decode(chunk);
+        const lines = text.split('\n');
+        
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const jsonStr = line.slice(6);
+              const data = JSON.parse(jsonStr);
+              
+              // Extract text from Gemini response
+              const textContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+              
+              if (textContent) {
+                // Convert to OpenAI format
+                const openAIFormat = {
+                  choices: [{
+                    delta: {
+                      content: textContent
+                    }
+                  }]
+                };
+                
+                controller.enqueue(
+                  new TextEncoder().encode(`data: ${JSON.stringify(openAIFormat)}\n\n`)
+                );
+              }
+              
+              // Check if done
+              if (data.candidates?.[0]?.finishReason) {
+                controller.enqueue(new TextEncoder().encode('data: [DONE]\n\n'));
+              }
+            } catch (e) {
+              console.error("Error parsing Gemini response:", e);
+            }
+          }
+        }
+      }
+    });
+
+    return new Response(response.body.pipeThrough(transformStream), {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (error) {
