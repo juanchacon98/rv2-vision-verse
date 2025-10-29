@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Play, MessageCircle } from "lucide-react";
+import { Play, MessageCircle, ChevronDown } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const Hero = () => {
@@ -15,6 +15,10 @@ const Hero = () => {
     if (toursElement) {
       toursElement.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const scrollDown = () => {
+    window.scrollBy({ top: window.innerHeight * 0.8, behavior: "smooth" });
   };
 
   const whatsappNumber = "584127833206";
@@ -69,6 +73,19 @@ const Hero = () => {
                 Contáctanos por WhatsApp
               </a>
             </Button>
+          </div>
+
+          {/* Scroll Down Indicator */}
+          <div className="pt-12 animate-fade-in">
+            <button
+              onClick={scrollDown}
+              className="group cursor-pointer hover:scale-110 transition-transform duration-300"
+              aria-label="Scroll down"
+            >
+              <ChevronDown 
+                className="h-10 w-10 text-white/80 group-hover:text-white animate-bounce drop-shadow-lg" 
+              />
+            </button>
           </div>
         </div>
       </div>
