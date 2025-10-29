@@ -95,28 +95,28 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <nav className="md:hidden mt-4 pb-4 flex flex-col gap-4 animate-fade-in">
+          <nav className="md:hidden mt-4 pb-4 flex flex-col gap-4 animate-fade-in bg-background/95 backdrop-blur-md rounded-lg p-4 shadow-lg border border-border">
             <button
               onClick={() => scrollToSection("inicio")}
-              className="text-foreground hover:text-primary transition-colors font-medium text-left"
+              className="text-foreground hover:text-primary transition-colors font-medium text-left py-2"
             >
               Inicio
             </button>
             <button
               onClick={() => scrollToSection("servicios")}
-              className="text-foreground hover:text-primary transition-colors font-medium text-left"
+              className="text-foreground hover:text-primary transition-colors font-medium text-left py-2"
             >
               Servicios
             </button>
             <button
               onClick={() => scrollToSection("proyectos")}
-              className="text-foreground hover:text-primary transition-colors font-medium text-left"
+              className="text-foreground hover:text-primary transition-colors font-medium text-left py-2"
             >
               Proyectos
             </button>
             <button
               onClick={() => scrollToSection("acerca")}
-              className="text-foreground hover:text-primary transition-colors font-medium text-left"
+              className="text-foreground hover:text-primary transition-colors font-medium text-left py-2"
             >
               Acerca de
             </button>

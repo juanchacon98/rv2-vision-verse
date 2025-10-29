@@ -79,11 +79,11 @@ const Hero = () => {
           <div className="pt-12 animate-fade-in">
             <button
               onClick={scrollDown}
-              className="group cursor-pointer hover:scale-110 transition-all duration-300 animate-float-up"
+              className="group cursor-pointer hover:scale-110 transition-all duration-300"
               aria-label="Scroll down"
             >
               <div className="relative w-8 h-12 border-2 border-primary/60 rounded-full flex justify-center pt-2 group-hover:border-primary overflow-hidden">
-                <div className="w-2 h-2.5 bg-primary rounded-full animate-scroll-down" />
+                <div className="w-2 h-2.5 bg-primary rounded-full animate-bounce" />
               </div>
             </button>
           </div>
