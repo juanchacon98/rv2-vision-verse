@@ -82,8 +82,8 @@ const Hero = () => {
               className="group cursor-pointer hover:scale-110 transition-all duration-300"
               aria-label="Scroll down"
             >
-              <div className="relative w-8 h-12 border-2 border-white/40 rounded-full flex justify-center pt-2 group-hover:border-white/60">
-                <div className="w-1.5 h-2 bg-white/60 rounded-full animate-bounce group-hover:bg-white" />
+              <div className="relative w-8 h-12 border-2 border-white/40 rounded-full flex justify-center pt-2 group-hover:border-white/60 overflow-hidden">
+                <div className="w-2 h-2.5 bg-primary rounded-full animate-[bounce_1.5s_ease-in-out_infinite] group-hover:bg-primary/80" />
               </div>
             </button>
           </div>
