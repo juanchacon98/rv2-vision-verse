@@ -94,6 +94,10 @@ export default {
           "60%": { opacity: "1" },
           "100%": { transform: "translateY(24px)", opacity: "0" },
         },
+        "float-up": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.3s ease-out",
@@ -103,6 +107,7 @@ export default {
         "scale-in": "scale-in 0.4s ease-out",
         "slide-in-right": "slide-in-right 0.5s ease-out",
         "scroll-down": "scroll-down 2s ease-in-out infinite",
+        "float-up": "float-up 2.5s ease-in-out infinite",
       },
       fontFamily: {
         sans: ['Inter', 'Poppins', 'system-ui', 'sans-serif'],
