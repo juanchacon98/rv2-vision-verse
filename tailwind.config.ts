@@ -90,7 +90,7 @@ export default {
         },
         "scroll-down": {
           "0%": { transform: "translateY(0)" },
-          "40%": { transform: "translateY(28px)" },
+          "60%": { transform: "translateY(22px)" },
           "100%": { transform: "translateY(0)" },
         },
         "float-up": {
@@ -105,7 +105,7 @@ export default {
         "fade-in-up": "fade-in-up 0.6s ease-out",
         "scale-in": "scale-in 0.4s ease-out",
         "slide-in-right": "slide-in-right 0.5s ease-out",
-        "scroll-down": "scroll-down 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite",
+        "scroll-down": "scroll-down 1.8s ease-in-out infinite",
         "float-up": "float-up 2.5s ease-in-out infinite",
       },
       fontFamily: {
