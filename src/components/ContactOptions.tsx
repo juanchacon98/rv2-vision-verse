@@ -72,7 +72,7 @@ const ContactOptions = () => {
 
         {/* Pulse animation ring */}
         {!isMenuOpen && (
-          <span className="absolute top-0 right-0 h-14 w-14 rounded-full bg-green-500 animate-ping opacity-20"></span>
+          <span className="absolute top-0 right-0 h-14 w-14 rounded-full bg-green-500 animate-ping opacity-20 pointer-events-none"></span>
         )}
       </div>
 
