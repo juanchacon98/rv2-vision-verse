@@ -24,7 +24,7 @@ const ContactOptions = () => {
   return (
     <>
       {/* Floating WhatsApp Button */}
-      <div className="fixed bottom-6 right-6 z-40">
+      <div className="fixed bottom-6 right-6 z-50">
         {isMenuOpen && (
           <div className="absolute bottom-20 right-0 bg-card border border-border rounded-2xl shadow-xl p-2 min-w-[200px] animate-fade-in">
             <button
