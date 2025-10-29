@@ -9,8 +9,7 @@ import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import ChatBot from "@/components/ChatBot";
-import WhatsAppFloat from "@/components/WhatsAppFloat";
+import ContactOptions from "@/components/ContactOptions";
 
 const Index = () => {
   return (
@@ -26,8 +25,7 @@ const Index = () => {
       <FAQ />
       <Contact />
       <Footer />
-      <ChatBot />
-      <WhatsAppFloat />
+      <ContactOptions />
     </div>
   );
 };

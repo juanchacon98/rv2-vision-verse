@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { Bot, X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,12 +10,16 @@ interface Message {
   content: string;
 }
 
-const ChatBot = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface ChatBotProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "¡Hola! 👋 Soy tu asesor de RV2. ¿Te gustaría conocer cómo los recorridos virtuales pueden transformar tu negocio en Venezuela?",
+      content: "¡Hola! 👋 Soy RAI, tu asesor inteligente de RV2. ¿Te gustaría conocer cómo los recorridos virtuales pueden transformar tu negocio en Venezuela?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -140,17 +144,6 @@ const ChatBot = () => {
 
   return (
     <>
-      {/* Floating Button */}
-      {!isOpen && (
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg bg-primary hover:bg-primary/90 hover:scale-110 transition-all duration-300 z-50"
-          size="icon"
-        >
-          <MessageCircle className="h-8 w-8" />
-        </Button>
-      )}
-
       {/* Chat Window */}
       {isOpen && (
         <div className="fixed bottom-6 right-6 w-96 h-[600px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col z-50 animate-fade-in-up">
@@ -158,17 +151,17 @@ const ChatBot = () => {
           <div className="bg-primary text-primary-foreground p-4 rounded-t-2xl flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
-                <MessageCircle className="h-6 w-6" />
+                <Bot className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="font-semibold">Asesor RV2</h3>
+                <h3 className="font-semibold">RAI - Asistente RV2</h3>
                 <p className="text-xs text-primary-foreground/80">
                   Experto en Recorridos Virtuales
                 </p>
               </div>
             </div>
             <Button
-              onClick={() => setIsOpen(false)}
+              onClick={onClose}
               variant="ghost"
               size="icon"
               className="hover:bg-primary-foreground/20"
