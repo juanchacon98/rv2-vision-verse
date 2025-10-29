@@ -2,8 +2,8 @@
   "empresa": {
     "nombre": "RV2",
     "descripcion": "Recorridos Virtuales Profesionales en Venezuela",
-    "email": "contacto@rv2.com.ve",
-    "telefono": "+58 412 1234567",
+    "email": "juanchacon@rv2ven.com",
+    "telefono": "+58 412 7833206",
     "direccion": "Caracas, Venezuela"
   },
   "mapa": {
@@ -21,10 +21,10 @@
     ]
   },
   "redes": {
-    "linkedin": "https://linkedin.com/company/rv2",
-    "instagram": "https://instagram.com/rv2",
-    "whatsapp": "https://wa.me/584121234567",
-    "email": "mailto:contacto@rv2.com.ve"
+    "linkedin": "https://www.linkedin.com/company/rv2ven/",
+    "instagram": "https://instagram.com/rv2ven",
+    "whatsapp": "https://wa.me/584127833206",
+    "email": "mailto:juanchacon@rv2ven.com"
   },
   "faq": [
     {
