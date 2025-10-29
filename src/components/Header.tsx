@@ -42,25 +42,33 @@ const Header = () => {
           <nav className="hidden md:flex items-center gap-8">
             <button
               onClick={() => scrollToSection("inicio")}
-              className="text-foreground hover:text-primary transition-colors font-medium"
+              className={`hover:text-primary transition-colors font-medium ${
+                isScrolled ? "text-foreground" : "text-white"
+              }`}
             >
               Inicio
             </button>
             <button
               onClick={() => scrollToSection("servicios")}
-              className="text-foreground hover:text-primary transition-colors font-medium"
+              className={`hover:text-primary transition-colors font-medium ${
+                isScrolled ? "text-foreground" : "text-white"
+              }`}
             >
               Servicios
             </button>
             <button
               onClick={() => scrollToSection("proyectos")}
-              className="text-foreground hover:text-primary transition-colors font-medium"
+              className={`hover:text-primary transition-colors font-medium ${
+                isScrolled ? "text-foreground" : "text-white"
+              }`}
             >
               Proyectos
             </button>
             <button
               onClick={() => scrollToSection("acerca")}
-              className="text-foreground hover:text-primary transition-colors font-medium"
+              className={`hover:text-primary transition-colors font-medium ${
+                isScrolled ? "text-foreground" : "text-white"
+              }`}
             >
               Acerca de
             </button>
@@ -76,7 +84,9 @@ const Header = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-foreground hover:text-primary transition-colors"
+              className={`p-2 hover:text-primary transition-colors ${
+                isScrolled ? "text-foreground" : "text-white"
+              }`}
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
