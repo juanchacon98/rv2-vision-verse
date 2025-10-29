@@ -83,7 +83,7 @@ const Hero = () => {
               aria-label="Scroll down"
             >
               <div className="relative w-8 h-12 border-2 border-white/40 rounded-full flex justify-center pt-2 group-hover:border-white/60 overflow-hidden">
-                <div className="w-2 h-2.5 bg-primary rounded-full animate-[bounce_1.5s_ease-in-out_infinite] group-hover:bg-primary/80" />
+                <div className="w-2 h-2.5 bg-primary rounded-full animate-scroll-down" />
               </div>
             </button>
           </div>
