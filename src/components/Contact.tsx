@@ -29,7 +29,7 @@ const Contact = () => {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-mail`, {
+      const response = await fetch('/api/send-mail', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

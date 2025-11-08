@@ -42,7 +42,7 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
     try {
       const endTime = new Date().toLocaleString('es-VE', { timeZone: 'America/Caracas' });
       
-      await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-mail`, {
+      await fetch('/api/send-mail', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
