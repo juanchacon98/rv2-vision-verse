@@ -14,7 +14,7 @@ const Contact = () => {
     mensaje: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validaciones básicas
@@ -28,8 +28,34 @@ const Contact = () => {
       return;
     }
 
-    toast.success("¡Mensaje enviado! Nos pondremos en contacto pronto.");
-    setFormData({ nombre: "", email: "", telefono: "", mensaje: "" });
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-mail`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          type: 'form',
+          name: formData.nombre,
+          email: formData.email,
+          phone: formData.telefono,
+          message: formData.mensaje,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success("¡Mensaje enviado! Nos pondremos en contacto pronto.");
+        setFormData({ nombre: "", email: "", telefono: "", mensaje: "" });
+      } else {
+        throw new Error(data.message || 'Error al enviar el mensaje');
+      }
+    } catch (error) {
+      console.error('Error sending form:', error);
+      toast.error("Hubo un problema al enviar el mensaje. Intenta nuevamente más tarde.");
+    }
   };
 
   const handleScheduleCall = () => {

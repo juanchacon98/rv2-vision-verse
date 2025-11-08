@@ -19,11 +19,14 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "¡Hola! 👋 Soy RAI, tu asesor inteligente de RV2. ¿Te gustaría conocer cómo los recorridos virtuales pueden transformar tu negocio en Venezuela?",
+      content: "¡Hola! 👋 Soy RAI, tu asesor inteligente de RV2. ¿Cuál es tu nombre?",
     },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [visitorName, setVisitorName] = useState<string>("");
+  const [hasAskedName, setHasAskedName] = useState(true);
+  const [startTime] = useState(() => new Date().toLocaleString('es-VE', { timeZone: 'America/Caracas' }));
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -32,6 +35,38 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  const sendChatTranscript = async () => {
+    if (messages.length === 0) return;
+
+    try {
+      const endTime = new Date().toLocaleString('es-VE', { timeZone: 'America/Caracas' });
+      
+      await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-mail`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          type: 'chat',
+          visitorName: visitorName || 'Visitante Anónimo',
+          startTime,
+          endTime,
+          messages,
+        }),
+      });
+
+      console.log('Chat transcript sent successfully');
+    } catch (error) {
+      console.error('Error sending chat transcript:', error);
+    }
+  };
+
+  const handleClose = () => {
+    sendChatTranscript();
+    onClose();
+  };
 
   const streamChat = async (userMessage: Message) => {
     const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
@@ -127,12 +162,35 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { role: "user", content: input };
+
+    // If this is the first user message (after asking for name), save it
+    if (!visitorName && messages.length === 1) {
+      setVisitorName(input.trim());
+      setMessages((prev) => [...prev, userMessage, { 
+        role: "assistant", 
+        content: `¡Mucho gusto, ${input.trim()}! ¿Te gustaría conocer cómo los recorridos virtuales pueden transformar tu negocio en Venezuela?` 
+      }]);
+      setInput("");
+      return;
+    }
+
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
+    // Check if user is saying goodbye
+    const farewellWords = ['gracias', 'adiós', 'adios', 'chao', 'hasta luego', 'nos vemos', 'bye'];
+    const isFarewell = farewellWords.some(word => input.toLowerCase().includes(word));
+
     await streamChat(userMessage);
     setIsLoading(false);
+
+    if (isFarewell) {
+      // Wait for AI response, then send transcript
+      setTimeout(() => {
+        sendChatTranscript();
+      }, 2000);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -161,7 +219,7 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
               </div>
             </div>
             <Button
-              onClick={onClose}
+              onClick={handleClose}
               variant="ghost"
               size="icon"
               className="hover:bg-primary-foreground/20"
