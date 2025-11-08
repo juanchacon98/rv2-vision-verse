@@ -29,7 +29,7 @@ const Contact = () => {
     }
 
     try {
-      const response = await fetch('/api/send-mail', {
+      const response = await fetch('https://mail.rv2ven.com/send-mail', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
