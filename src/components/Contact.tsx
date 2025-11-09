@@ -23,26 +23,23 @@ const Contact = () => {
       return;
     }
 
-    if (formData.telefono.length !== 10) {
-      toast.error("El número telefónico debe tener 10 dígitos");
-      return;
-    }
+if (formData.telefono.length > 13) {
+  toast.error("El número telefónico no puede tener más de 13 dígitos");
+  return;
+}
 
     try {
-      const response = await fetch('https://mail.rv2ven.com/send-mail', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({
-          type: 'form',
-          name: formData.nombre,
-          email: formData.email,
-          phone: formData.telefono,
-          message: formData.mensaje,
-        }),
-      });
+      const response = await fetch('/api/send-mail', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    type: 'form',
+    name: formData.nombre,
+    email: formData.email,
+    phone: formData.telefono,
+    message: formData.mensaje,
+  }),
+});
 
       const data = await response.json();
 
