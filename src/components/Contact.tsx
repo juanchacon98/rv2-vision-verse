@@ -119,12 +119,12 @@ if (formData.telefono.length > 13) {
                 htmlFor="telefono"
                 className="block text-sm font-semibold text-foreground mb-2"
               >
-                Número telefónico (10 dígitos) *
+                Número telefónico (máximo 13 dígitos) *
               </label>
               <Input
                 id="telefono"
                 type="tel"
-                maxLength={10}
+                maxLength={13}
                 value={formData.telefono}
                 onChange={(e) =>
                   setFormData({ ...formData, telefono: e.target.value.replace(/\D/g, "") })
