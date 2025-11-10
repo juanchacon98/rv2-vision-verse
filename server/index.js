@@ -1,5 +1,54 @@
 import http from 'node:http';
-import { parse } from 'node:url';
+import { readFileSync, existsSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath, parse as parseUrl } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+function hydrateEnvFromFile(envFile) {
+  if (!envFile || !existsSync(envFile)) {
+    return;
+  }
+
+  const fileContent = readFileSync(envFile, 'utf8');
+
+  fileContent.split(/\r?\n/).forEach((line) => {
+    const trimmed = line.trim();
+
+    if (!trimmed || trimmed.startsWith('#')) {
+      return;
+    }
+
+    const equalsIndex = trimmed.indexOf('=');
+    if (equalsIndex === -1) {
+      return;
+    }
+
+    const key = trimmed.slice(0, equalsIndex).trim();
+    if (!key || key in process.env) {
+      return;
+    }
+
+    let value = trimmed.slice(equalsIndex + 1).trim();
+    if (value.startsWith('"') && value.endsWith('"')) {
+      value = value.slice(1, -1);
+    } else if (value.startsWith("'") && value.endsWith("'")) {
+      value = value.slice(1, -1);
+    }
+
+    process.env[key] = value;
+  });
+}
+
+const candidateEnvFiles = [
+  process.env.MAIL_SERVER_ENV_FILE && resolve(process.cwd(), process.env.MAIL_SERVER_ENV_FILE),
+  resolve(process.cwd(), '.env.mail'),
+  resolve(process.cwd(), '.env'),
+  resolve(__dirname, '.env'),
+];
+
+candidateEnvFiles.forEach((filePath) => hydrateEnvFromFile(filePath));
 
 const PORT = Number(process.env.PORT || 8787);
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -48,7 +97,7 @@ async function sendEmail(payload) {
 
 const server = http.createServer(async (req, res) => {
   const { method, url } = req;
-  const { pathname } = parse(url ?? '', true);
+  const { pathname } = parseUrl(url ?? '', true);
 
   if (method === 'OPTIONS') {
     res.writeHead(204, corsHeaders);
