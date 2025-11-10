@@ -10,6 +10,12 @@ interface Message {
   content: string;
 }
 
+interface ContactInfo {
+  name: string;
+  email: string;
+  phone: string;
+}
+
 interface ChatBotProps {
   isOpen: boolean;
   onClose: () => void;
@@ -19,13 +25,14 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "¡Hola! 👋 Soy RAI, tu asesor inteligente de RV2. ¿Cuál es tu nombre?",
+      content: "¡Hola! 👋 Soy RAI, tu asesor inteligente de RV2. ¿En qué puedo ayudarte hoy?",
     },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [visitorName, setVisitorName] = useState<string>("");
-  const [hasAskedName, setHasAskedName] = useState(true);
+  const [contactInfo, setContactInfo] = useState<ContactInfo>({ name: "", email: "", phone: "" });
+  const [collectingContact, setCollectingContact] = useState(false);
+  const [contactStep, setContactStep] = useState<'name' | 'email' | 'phone' | 'done'>('name');
   const [startTime] = useState(() => new Date().toLocaleString('es-VE', { timeZone: 'America/Caracas' }));
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -37,7 +44,7 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
   }, [messages]);
 
   const sendChatTranscript = async () => {
-    if (messages.length === 0) return;
+    if (messages.length === 0 || contactStep !== 'done') return;
 
     try {
       const endTime = new Date().toLocaleString('es-VE', { timeZone: 'America/Caracas' });
@@ -50,7 +57,9 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
         },
         body: JSON.stringify({
           type: 'chat',
-          visitorName: visitorName || 'Visitante Anónimo',
+          visitorName: contactInfo.name || 'Visitante Anónimo',
+          visitorEmail: contactInfo.email,
+          visitorPhone: contactInfo.phone,
           startTime,
           endTime,
           messages,
@@ -58,13 +67,19 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
       });
 
       console.log('Chat transcript sent successfully');
+      toast({
+        title: "¡Gracias!",
+        description: "Tu conversación ha sido enviada. Te contactaremos pronto.",
+      });
     } catch (error) {
       console.error('Error sending chat transcript:', error);
     }
   };
 
   const handleClose = () => {
-    sendChatTranscript();
+    if (contactStep === 'done') {
+      sendChatTranscript();
+    }
     onClose();
   };
 
@@ -163,34 +178,65 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
 
     const userMessage: Message = { role: "user", content: input };
 
-    // If this is the first user message (after asking for name), save it
-    if (!visitorName && messages.length === 1) {
-      setVisitorName(input.trim());
-      setMessages((prev) => [...prev, userMessage, { 
-        role: "assistant", 
-        content: `¡Mucho gusto, ${input.trim()}! ¿Te gustaría conocer cómo los recorridos virtuales pueden transformar tu negocio en Venezuela?` 
-      }]);
-      setInput("");
-      return;
+    // Handle contact info collection
+    if (collectingContact) {
+      setMessages((prev) => [...prev, userMessage]);
+      
+      if (contactStep === 'name') {
+        setContactInfo(prev => ({ ...prev, name: input.trim() }));
+        setMessages((prev) => [...prev, { 
+          role: "assistant", 
+          content: "Perfecto. ¿Cuál es tu correo electrónico?" 
+        }]);
+        setContactStep('email');
+        setInput("");
+        return;
+      } else if (contactStep === 'email') {
+        setContactInfo(prev => ({ ...prev, email: input.trim() }));
+        setMessages((prev) => [...prev, { 
+          role: "assistant", 
+          content: "Excelente. ¿Y tu número de teléfono?" 
+        }]);
+        setContactStep('phone');
+        setInput("");
+        return;
+      } else if (contactStep === 'phone') {
+        setContactInfo(prev => ({ ...prev, phone: input.trim() }));
+        setMessages((prev) => [...prev, { 
+          role: "assistant", 
+          content: "¡Muchas gracias! He guardado tu información y te enviaremos el resumen de nuestra conversación. Un asesor se pondrá en contacto contigo pronto. 🎉" 
+        }]);
+        setContactStep('done');
+        setCollectingContact(false);
+        setInput("");
+        // Send transcript after collecting all info
+        setTimeout(() => {
+          sendChatTranscript();
+        }, 1000);
+        return;
+      }
     }
 
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
-    setIsLoading(true);
 
     // Check if user is saying goodbye
     const farewellWords = ['gracias', 'adiós', 'adios', 'chao', 'hasta luego', 'nos vemos', 'bye'];
     const isFarewell = farewellWords.some(word => input.toLowerCase().includes(word));
 
+    if (isFarewell && contactStep === 'name') {
+      // Start collecting contact info
+      setCollectingContact(true);
+      setMessages((prev) => [...prev, { 
+        role: "assistant", 
+        content: "¡Fue un gusto ayudarte! Antes de despedirnos, ¿podrías compartirme tu nombre?" 
+      }]);
+      return;
+    }
+
+    setIsLoading(true);
     await streamChat(userMessage);
     setIsLoading(false);
-
-    if (isFarewell) {
-      // Wait for AI response, then send transcript
-      setTimeout(() => {
-        sendChatTranscript();
-      }, 2000);
-    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

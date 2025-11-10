@@ -1,23 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { Resend } from "npm:resend@2.0.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Configuración del cliente SMTP
-const client = new SMTPClient({
-  connection: {
-    hostname: 'mail.rv2ven.com',
-    port: 587,
-    tls: false,
-    auth: {
-      username: 'contacto@rv2ven.com',
-      password: Deno.env.get('SMTP_PASS') || '',
-    },
-  },
-});
+const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -39,11 +28,10 @@ serve(async (req) => {
 
       console.log('Sending form email from:', name, email);
 
-      await client.send({
-        from: 'contacto@rv2ven.com',
-        to: 'juanchacon@rv2ven.com',
+      const emailResponse = await resend.emails.send({
+        from: 'RV2 Web <onboarding@resend.dev>',
+        to: ['juanchacon@rv2ven.com', 'juanchacon0298@gmail.com'],
         subject: 'Nuevo mensaje desde el formulario web RV2',
-        content: 'auto',
         html: `
           <h2>Nuevo mensaje desde el formulario RV2</h2>
           <p><strong>Nombre:</strong> ${name}</p>
@@ -55,8 +43,7 @@ serve(async (req) => {
         `,
       });
 
-      await client.close();
-      console.log('Form email sent successfully');
+      console.log('Form email sent successfully:', emailResponse);
 
       return new Response(
         JSON.stringify({ success: true, message: 'Correo enviado correctamente.' }),
@@ -71,7 +58,7 @@ serve(async (req) => {
     // 2️⃣ ENVÍO DE TRANSCRIPCIÓN DE CHAT
     // -------------------------------
     if (type === 'chat') {
-      const { visitorName, startTime, endTime, messages } = body;
+      const { visitorName, visitorEmail, visitorPhone, startTime, endTime, messages } = body;
 
       console.log('Sending chat transcript for:', visitorName);
 
@@ -82,14 +69,15 @@ serve(async (req) => {
         )
         .join('');
 
-      await client.send({
-        from: 'contacto@rv2ven.com',
-        to: 'juanchacon@rv2ven.com',
+      const emailResponse = await resend.emails.send({
+        from: 'RV2 Chat <onboarding@resend.dev>',
+        to: ['juanchacon@rv2ven.com', 'juanchacon0298@gmail.com'],
         subject: `Transcripción de chat - ${visitorName || 'Visitante Anónimo'}`,
-        content: 'auto',
         html: `
           <h2>Transcripción de chat – RV2 Web</h2>
           <p><strong>Visitante:</strong> ${visitorName || 'Anónimo'}</p>
+          <p><strong>Correo:</strong> ${visitorEmail || 'No proporcionado'}</p>
+          <p><strong>Teléfono:</strong> ${visitorPhone || 'No proporcionado'}</p>
           <p><strong>Hora de inicio:</strong> ${startTime}</p>
           <p><strong>Hora de fin:</strong> ${endTime}</p>
           <hr>
@@ -99,8 +87,7 @@ serve(async (req) => {
         `,
       });
 
-      await client.close();
-      console.log('Chat transcript sent successfully');
+      console.log('Chat transcript sent successfully:', emailResponse);
 
       return new Response(
         JSON.stringify({ success: true, message: 'Transcripción enviada.' }),
