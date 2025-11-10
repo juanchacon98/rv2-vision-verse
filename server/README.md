@@ -3,7 +3,7 @@
 Este servicio HTTP minimalista reemplaza las funciones Edge de Supabase. Expone dos rutas:
 
 - `POST /api/send-mail` para reenviar formularios y transcripciones vía [Resend](https://resend.com/).
-- `POST /api/chat` para conectarse directamente con la API de Gemini y devolver respuestas en streaming al chatbot del frontend.
+- `POST /api/chat` para conectarse directamente con la API de Gemini y regresar una respuesta JSON para el chatbot del frontend.
 
 ## Requisitos
 

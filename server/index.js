@@ -181,7 +181,7 @@ const server = http.createServer(async (req, res) => {
             const content = (typeof m.content === 'string' && m.content.trim()) ? m.content : '[mensaje vacío]';
             return `<p><strong>${roleLabel}</strong> ${content}</p>`;
           })
-          .join('');
+          .join('\n');
 
         await sendEmail({
           from: FROM_CHAT,
@@ -223,7 +223,8 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
-      const systemPrompt = `Eres un empleado profesional de RV2, una empresa especializada en recorridos virtuales en Venezuela. Tu único objetivo es ayudar a los clientes a entender los beneficios de los recorridos virtuales y cómo pueden impulsar sus negocios.
+      const systemPrompt = `Eres un empleado profesional de RV2, una empresa especializada en recorridos virtuales en Venezuela.
+Tu único objetivo es ayudar a los clientes a entender los beneficios de los recorridos virtuales y cómo pueden impulsar sus negocios.
 
 RESPONSABILIDADES:
 - Hablar SOLO sobre recorridos virtuales y sus beneficios
@@ -254,13 +255,13 @@ Actúa siempre como un asesor experto que quiere ayudar genuinamente al cliente 
           role: 'user',
           parts: [{ text: systemPrompt }],
         },
-        {
-          role: 'model',
-          parts: [{ text: 'Entendido. Actuaré como asesor profesional de RV2 enfocado exclusivamente en recorridos virtuales.' }],
-        },
       ];
 
       for (const msg of messages) {
+        if (!msg || typeof msg.content !== 'string' || !msg.content.trim()) {
+          continue;
+        }
+
         geminiContents.push({
           role: msg.role === 'assistant' ? 'model' : 'user',
           parts: [{ text: msg.content }],
@@ -268,7 +269,7 @@ Actúa siempre como un asesor experto que quiere ayudar genuinamente al cliente 
       }
 
       const geminiResponse = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
         {
           method: 'POST',
           headers: {
@@ -277,7 +278,7 @@ Actúa siempre como un asesor experto que quiere ayudar genuinamente al cliente 
           body: JSON.stringify({
             contents: geminiContents,
             generationConfig: {
-              temperature: 0.9,
+              temperature: 0.7,
               topK: 40,
               topP: 0.95,
               maxOutputTokens: 1024,
@@ -286,7 +287,7 @@ Actúa siempre como un asesor experto que quiere ayudar genuinamente al cliente 
         },
       );
 
-      if (!geminiResponse.ok || !geminiResponse.body) {
+      if (!geminiResponse.ok) {
         const errorText = await geminiResponse.text();
         sendJson(res, geminiResponse.status || 500, {
           success: false,
@@ -296,91 +297,27 @@ Actúa siempre como un asesor experto que quiere ayudar genuinamente al cliente 
         return;
       }
 
-      res.writeHead(200, {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
-        ...corsHeaders,
+      const geminiData = await geminiResponse.json();
+      const firstCandidate = geminiData.candidates?.[0];
+      const generatedText = firstCandidate?.content?.parts
+        ?.map((part) => part.text)
+        .filter(Boolean)
+        .join('\n')
+        .trim();
+
+      if (!generatedText) {
+        sendJson(res, 502, {
+          success: false,
+          message: 'La respuesta de Gemini no contenía texto utilizable.',
+        });
+        return;
+      }
+
+      sendJson(res, 200, {
+        success: true,
+        message: generatedText,
+        finishReason: firstCandidate?.finishReason || null,
       });
-
-      if (typeof res.flushHeaders === 'function') {
-        res.flushHeaders();
-      }
-
-      const decoder = new TextDecoder();
-      let textBuffer = '';
-
-      const processLine = (line) => {
-        let sanitizedLine = line;
-        if (sanitizedLine.endsWith('\r')) {
-          sanitizedLine = sanitizedLine.slice(0, -1);
-        }
-
-        if (!sanitizedLine || sanitizedLine.startsWith(':')) {
-          return;
-        }
-
-        if (!sanitizedLine.startsWith('data:')) {
-          return;
-        }
-
-        const payload = sanitizedLine.slice(5).trim();
-        if (!payload) {
-          return;
-        }
-
-        if (payload === '[DONE]') {
-          res.write('data: [DONE]\n\n');
-          return;
-        }
-
-        try {
-          const data = JSON.parse(payload);
-          const textContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-          if (textContent) {
-            const openAIFormat = {
-              choices: [
-                {
-                  delta: {
-                    content: textContent,
-                  },
-                },
-              ],
-            };
-
-            res.write(`data: ${JSON.stringify(openAIFormat)}\n\n`);
-          }
-
-          if (data.candidates?.[0]?.finishReason) {
-            res.write('data: [DONE]\n\n');
-          }
-        } catch (error) {
-          console.error('Error parsing Gemini response chunk:', error);
-        }
-      };
-
-      try {
-        for await (const chunk of geminiResponse.body) {
-          textBuffer += decoder.decode(chunk, { stream: true });
-
-          let newlineIndex;
-          while ((newlineIndex = textBuffer.indexOf('\n')) !== -1) {
-            const line = textBuffer.slice(0, newlineIndex);
-            textBuffer = textBuffer.slice(newlineIndex + 1);
-            processLine(line);
-          }
-        }
-
-        const remaining = decoder.decode();
-        if (remaining) {
-          processLine(remaining);
-        }
-      } catch (error) {
-        console.error('Error streaming Gemini response:', error);
-      }
-
-      res.end();
       return;
     }
 

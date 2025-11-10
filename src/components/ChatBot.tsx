@@ -101,7 +101,7 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
         body: JSON.stringify({ messages: [...messages, userMessage] }),
       });
 
-      if (!response.ok || !response.body) {
+      if (!response.ok) {
         if (response.status === 429) {
           toast({
             title: "Límite excedido",
@@ -121,51 +121,19 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
         throw new Error("Error al iniciar conversación");
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let textBuffer = "";
-      let assistantContent = "";
+      const data = await response.json();
 
-      // Add placeholder assistant message
-      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        textBuffer += decoder.decode(value, { stream: true });
-
-        let newlineIndex: number;
-        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
-          let line = textBuffer.slice(0, newlineIndex);
-          textBuffer = textBuffer.slice(newlineIndex + 1);
-
-          if (line.endsWith("\r")) line = line.slice(0, -1);
-          if (line.startsWith(":") || line.trim() === "") continue;
-          if (!line.startsWith("data: ")) continue;
-
-          const jsonStr = line.slice(6).trim();
-          if (jsonStr === "[DONE]") break;
-
-          try {
-            const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content;
-            if (content) {
-              assistantContent += content;
-              setMessages((prev) => {
-                const newMessages = [...prev];
-                newMessages[newMessages.length - 1] = {
-                  role: "assistant",
-                  content: assistantContent,
-                };
-                return newMessages;
-              });
-            }
-          } catch {
-            continue;
-          }
-        }
+      if (!data?.success || !data?.message) {
+        throw new Error(data?.message || "Respuesta inválida del asistente");
       }
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: String(data.message),
+        },
+      ]);
     } catch (error) {
       console.error("Error:", error);
       toast({
@@ -173,8 +141,6 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
         description: "No se pudo enviar el mensaje. Intenta de nuevo.",
         variant: "destructive",
       });
-      // Remove the placeholder message on error
-      setMessages((prev) => prev.slice(0, -1));
     }
   };
 
