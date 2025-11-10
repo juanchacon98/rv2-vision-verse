@@ -90,14 +90,13 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
   };
 
   const streamChat = async (userMessage: Message) => {
-    const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+    const CHAT_URL = import.meta.env.VITE_CHAT_API_URL || '/api/chat';
 
     try {
       const response = await fetch(CHAT_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({ messages: [...messages, userMessage] }),
       });
