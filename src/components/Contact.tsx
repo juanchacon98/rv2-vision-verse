@@ -23,7 +23,7 @@ const Contact = () => {
       return;
     }
 
-    if (formData.telefono.length !== 10) {
+    if (formData.telefono.length > 13) {
       toast.error("El número telefónico debe tener 10 dígitos");
       return;
     }
@@ -123,12 +123,12 @@ const Contact = () => {
                 htmlFor="telefono"
                 className="block text-sm font-semibold text-foreground mb-2"
               >
-                Número telefónico (10 dígitos) *
+                Número telefónico (máximo 13 dígitos) *
               </label>
               <Input
                 id="telefono"
                 type="tel"
-                maxLength={10}
+                maxLength={13}
                 value={formData.telefono}
                 onChange={(e) =>
                   setFormData({ ...formData, telefono: e.target.value.replace(/\D/g, "") })
