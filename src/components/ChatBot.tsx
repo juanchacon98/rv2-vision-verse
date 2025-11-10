@@ -49,11 +49,12 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
     try {
       const endTime = new Date().toLocaleString('es-VE', { timeZone: 'America/Caracas' });
       
-      await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-mail`, {
+      const mailEndpoint = import.meta.env.VITE_MAIL_API_URL || '/api/send-mail';
+
+      const response = await fetch(mailEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({
           type: 'chat',
@@ -65,6 +66,11 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
           messages,
         }),
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Error al enviar la transcripción');
+      }
 
       console.log('Chat transcript sent successfully');
       toast({

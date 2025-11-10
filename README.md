@@ -34,6 +34,15 @@ npm i
 
 # Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
+
+# Step 5: (Opcional) Levanta el servicio local para correos basado en Resend.
+# Este servicio expone POST http://localhost:8787/api/send-mail y requiere
+# la variable de entorno RESEND_API_KEY definida.
+npm run server
+
+> Nota: el frontend consume la URL indicada en `VITE_MAIL_API_URL`. Por defecto
+> apunta a `http://localhost:8787/api/send-mail`, así que ajusta este valor si
+> cambias el puerto o el host del servicio.
 ```
 
 **Edit a file directly in GitHub**
