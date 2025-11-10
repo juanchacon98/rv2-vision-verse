@@ -1,7 +1,0 @@
-project_id = "xrtqyqyixmukxppknvqb"
-
-[functions.chat]
-verify_jwt = false
-
-[functions.send-mail]
-verify_jwt = false

@@ -29,11 +29,12 @@ const Contact = () => {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-mail`, {
+      const mailEndpoint = import.meta.env.VITE_MAIL_API_URL || '/api/send-mail';
+
+      const response = await fetch(mailEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({
           type: 'form',
