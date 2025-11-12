@@ -45,14 +45,18 @@ const Contact = () => {
         }),
       });
 
-      const data = await response.json();
+const data = await response.json();
 
-      if (data.success) {
-        toast.success("¡Mensaje enviado! Nos pondremos en contacto pronto.");
-        setFormData({ nombre: "", email: "", telefono: "", mensaje: "" });
-      } else {
-        throw new Error(data.message || 'Error al enviar el mensaje');
-      }
+// Éxito si la API devuelve ok:true, success:true o status:"success"
+if (data?.ok || data?.success || data?.status === "success") {
+  toast.success(
+    "Mensaje enviado. Si desea una respuesta más rápida, por favor escríbanos por WhatsApp haciendo click aquí: https://wa.me/5841433577226"
+  );
+  setFormData({ nombre: "", email: "", telefono: "", mensaje: "" });
+} else {
+  throw new Error(data.message || 'Error al enviar el mensaje');
+}
+
     } catch (error) {
       console.error('Error sending form:', error);
       toast.error("Hubo un problema al enviar el mensaje. Intenta nuevamente más tarde.");
