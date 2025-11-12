@@ -36,15 +36,15 @@ npm i
 npm run dev
 
 # Step 5: (Opcional) Levanta el servicio local que maneja correos y chat IA.
-# Este servicio expone POST http://localhost:8787/api/send-mail y POST
-# http://localhost:8787/api/chat, cargando sus variables desde `.env`/`.env.mail`.
+# Este servicio expone POST /api/send-mail y POST
+# /api/chat, cargando sus variables desde `.env`/`.env.mail`.
 # Consulta `server/README.md` para ver instrucciones de despliegue y
 # configuración avanzada.
 npm run server
 
 > Nota: el frontend consume las URL indicadas en `VITE_MAIL_API_URL` y
-> `VITE_CHAT_API_URL`. Por defecto apuntan a `http://localhost:8787/api/send-mail`
-> y `http://localhost:8787/api/chat`, así que ajusta estos valores si cambias el
+> `VITE_CHAT_API_URL`. Por defecto apuntan a `/api/send-mail`
+> y `/api/chat`, así que ajusta estos valores si cambias el
 > puerto o el host del servicio y reconstruye con `npm run build`.
 ```
 

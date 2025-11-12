@@ -25,8 +25,8 @@ Campos imprescindibles:
 - `RESEND_API_KEY`: clave secreta de Resend.
 - `GEMINI_API_KEY`: clave secreta de Gemini.
 - `RESEND_RECIPIENTS`: lista separada por comas de correos que recibirán los formularios y chats.
-- `VITE_MAIL_API_URL`: URL que el frontend utilizará para contactar este servicio. Si lo mantienes en el mismo host, deja `/api/send-mail` o `http://localhost:8787/api/send-mail`.
-- `VITE_CHAT_API_URL`: URL que el frontend utilizará para el chat IA. Por defecto apunta a `/api/chat` o `http://localhost:8787/api/chat`.
+- `VITE_MAIL_API_URL`: URL que el frontend utilizará para contactar este servicio. Si lo mantienes en el mismo host, deja `/api/send-mail` o `/api/send-mail`.
+- `VITE_CHAT_API_URL`: URL que el frontend utilizará para el chat IA. Por defecto apunta a `/api/chat` o `/api/chat`.
 
 Campos opcionales:
 
